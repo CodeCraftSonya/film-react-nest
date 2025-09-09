@@ -2,6 +2,6 @@
 
 export class CreateOrderDto {
   readonly filmId: string;
-  readonly seats: number[];
-  readonly userId: string;
+  readonly scheduleId: string;
+  readonly seats: string[];
 }
