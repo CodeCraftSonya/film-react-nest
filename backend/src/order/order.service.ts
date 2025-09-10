@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/order.dto';
-import { FilmsRepository } from '../films/films.repository';
+import { FilmsRepository } from '../repository/films.repository';
 import { randomUUID } from 'crypto';
 
 @Injectable()
@@ -21,7 +21,6 @@ export class OrderService {
     if (!schedule) {
       throw new NotFoundException(`Сеанс с id=${dto.scheduleId} не найден`);
     }
-
     // проверка занятых мест
     const alreadyTaken = dto.seats.filter((seat) =>
       schedule.taken.includes(seat),
