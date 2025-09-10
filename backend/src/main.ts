@@ -5,6 +5,7 @@ import 'dotenv/config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  app.setGlobalPrefix('api/afisha');
   await app.listen(3000);
 }
 
