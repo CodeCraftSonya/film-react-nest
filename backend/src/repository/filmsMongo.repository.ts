@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Film, FilmDocument } from '../films/schemas/film.schema';
 
 @Injectable()
-export class FilmsRepository {
+export class FilmsRepositoryMongoDB {
   constructor(@InjectModel(Film.name) private filmModel: Model<FilmDocument>) {}
 
   async findAll(): Promise<Film[]> {
@@ -13,5 +13,9 @@ export class FilmsRepository {
 
   async findById(id: string): Promise<FilmDocument | null> {
     return this.filmModel.findOne({ id }).exec();
+  }
+
+  async save(film: FilmDocument): Promise<FilmDocument> {
+    return film.save();
   }
 }
