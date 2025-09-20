@@ -50,11 +50,17 @@ export class OrderService {
     console.log(
       'schedule.taken',
       schedule.taken,
+
       Array.isArray(schedule.taken),
     );
 
     // бронируем места
-    schedule.taken = schedule.taken || [];
+    schedule.taken = schedule.taken
+      ? Array.isArray(schedule.taken)
+        ? schedule.taken
+        : [schedule.taken]
+      : [];
+
     schedule.taken.push(...seatStrings);
     await this.filmsRepository.save(film as any);
 
