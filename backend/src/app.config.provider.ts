@@ -1,5 +1,7 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+export const applicationConfig = process.env;
+
 export const configProvider = {
   imports: [ConfigModule.forRoot()],
   provide: 'CONFIG',

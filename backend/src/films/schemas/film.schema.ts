@@ -9,10 +9,10 @@ export class Schedule {
   id: string;
 
   @Prop({ required: true })
-  daytime: Date;
+  daytime: string;
 
   @Prop({ required: true })
-  hall: string;
+  hall: number;
 
   @Prop({ required: true })
   rows: number;
@@ -57,7 +57,7 @@ export class Film {
   @Prop()
   cover: string;
 
-  @Prop({ type: [ScheduleSchema], default: [] })
+  @Prop({ type: [ScheduleSchema] })
   schedule: Schedule[];
 }
 
