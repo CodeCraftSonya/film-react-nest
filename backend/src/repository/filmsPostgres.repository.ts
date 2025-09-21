@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FilmEntity } from '../films/entities/film.entity';
+import { FilmsRepository } from './films.repository.interface';
 
 @Injectable()
-export class FilmsRepositoryPostgres {
+export class FilmsRepositoryPostgres implements FilmsRepository<FilmEntity> {
   constructor(
     @InjectRepository(FilmEntity)
     private readonly filmRepository: Repository<FilmEntity>,

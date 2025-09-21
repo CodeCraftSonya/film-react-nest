@@ -5,22 +5,21 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/order.dto';
-import { FilmsRepositoryMongoDB } from '../repository/filmsMongo.repository';
 import { randomUUID } from 'crypto';
-import { FilmsRepositoryPostgres } from '../repository/filmsPostgres.repository';
+import { FilmsRepository } from '../repository/films.repository.interface';
+import { FilmEntity } from '../films/entities/film.entity';
+import { FilmDocument } from '../films/schemas/film.schema';
 
 @Injectable()
 export class OrderService {
   constructor(
     @Inject('FILMS_REPOSITORY')
-    private readonly filmsRepository:
-      | FilmsRepositoryMongoDB
-      | FilmsRepositoryPostgres,
+    private readonly filmsRepository: FilmsRepository<
+      FilmDocument | FilmEntity
+    >,
   ) {}
 
   async createOrder(dto: CreateOrderDto) {
-    console.log('CreateOrderDto:', dto);
-
     const film = await this.filmsRepository.findById(dto.tickets[0].film);
     if (!film) {
       throw new NotFoundException(
@@ -45,15 +44,6 @@ export class OrderService {
       );
     }
 
-    console.log('Film:', film.id);
-    console.log('Schedule:', schedule.id, schedule.taken);
-    console.log(
-      'schedule.taken',
-      schedule.taken,
-
-      Array.isArray(schedule.taken),
-    );
-
     // бронируем места
     schedule.taken = schedule.taken
       ? Array.isArray(schedule.taken)
@@ -62,12 +52,10 @@ export class OrderService {
       : [];
 
     schedule.taken.push(...seatStrings);
-    await this.filmsRepository.save(film as any);
-
-    // формируем список заказов
+    await this.filmsRepository.save(film);
     const orders = dto.tickets.map((ticket) => ({
       film: ticket.film,
-      session: ticket.session, // это schedule.id
+      session: ticket.session,
       daytime: ticket.daytime,
       row: ticket.row,
       seat: ticket.seat,

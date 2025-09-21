@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Film, FilmDocument } from '../films/schemas/film.schema';
+import { FilmsRepository } from './films.repository.interface';
 
 @Injectable()
-export class FilmsRepositoryMongoDB {
+export class FilmsRepositoryMongoDB implements FilmsRepository<FilmDocument> {
   constructor(@InjectModel(Film.name) private filmModel: Model<FilmDocument>) {}
 
   async findAll(): Promise<Film[]> {
