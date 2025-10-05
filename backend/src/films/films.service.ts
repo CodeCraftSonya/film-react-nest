@@ -1,9 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { FilmsRepository } from '../repository/films.repository';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { FilmsRepositoryMongoDB } from '../repository/filmsMongo.repository';
+import { FilmsRepositoryPostgres } from '../repository/filmsPostgres.repository';
 
 @Injectable()
 export class FilmsService {
-  constructor(private readonly filmsRepository: FilmsRepository) {}
+  constructor(
+    @Inject('FILMS_REPOSITORY')
+    private readonly filmsRepository:
+      | FilmsRepositoryMongoDB
+      | FilmsRepositoryPostgres,
+  ) {}
 
   async findAll() {
     const films = await this.filmsRepository.findAll();
@@ -37,7 +43,7 @@ export class FilmsService {
         rows: s.rows,
         seats: s.seats,
         price: s.price,
-        taken: s.taken,
+        taken: s.taken || [],
       })),
     };
   }
