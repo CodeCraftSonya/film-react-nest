@@ -1,5 +1,5 @@
 import { ConsoleLogger, Injectable } from '@nestjs/common';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 
 @Injectable()
 export class DevLogger extends ConsoleLogger {

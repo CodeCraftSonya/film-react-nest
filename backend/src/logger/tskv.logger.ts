@@ -12,12 +12,19 @@ export class TskvLogger implements LoggerService {
     const base = {
       time: timestamp,
       level,
-      message: this.stringify(message),
+      message: String(message).replace(/\t|\n/g, ' '),
     };
 
-    if (optionalParams.length > 0) {
-      base['extra'] = this.stringify(optionalParams);
-    }
+    optionalParams.forEach((param, index) => {
+      if (typeof param === 'object' && param !== null) {
+        // превращаем объект в key1:value1,key2:value2
+        base[`param${index}`] = Object.entries(param)
+          .map(([k, v]) => `${k}:${v}`)
+          .join(',');
+      } else {
+        base[`param${index}`] = String(param);
+      }
+    });
 
     return (
       Object.entries(base)
