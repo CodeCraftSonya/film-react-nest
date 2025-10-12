@@ -1,0 +1,80 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    volumes:
+      - frontend_dist:/app/dist
+    networks:
+      - app-network
+
+  backend:
+    environment:
+      DATABASE_DRIVER: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: postgres
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/postgres
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    depends_on:
+      - db
+
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+
+    depends_on:
+      - frontend
+      - backend
+    volumes:
+      - frontend_dist:/usr/share/nginx/html
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - app-network
+
+volumes:
+  frontend_dist:
+  pgdata:
+  pgadmin_data:
+
+networks:
+  app-network:
+    driver: bridge

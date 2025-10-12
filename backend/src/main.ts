@@ -24,7 +24,7 @@ async function bootstrap() {
 
   app.useLogger(logger);
 
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
   console.log(
     `🚀 App running on http://localhost:3000 using ${loggerType.toUpperCase()} logger`,
   );
