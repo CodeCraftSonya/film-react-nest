@@ -44,7 +44,7 @@ services:
     volumes:
       - frontend_dist:/usr/share/nginx/html
     ports:
-      - "80:80"
+      - "81:80"
     networks:
       - app-network
 
